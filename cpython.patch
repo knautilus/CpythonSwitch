@@ -113,7 +113,7 @@ index f5df5c3b907..9dadfd607cf 100644
      #define OS_UNAME_METHODDEF
  #endif /* !defined(OS_UNAME_METHODDEF) */
 diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
-index f498d40e34c..16cd13abf8e 100644
+index f498d40e34c..36ec7f6ce6e 100644
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
 @@ -322,6 +322,7 @@ corresponding Unix manual entries for more information on calls.");
@@ -124,15 +124,34 @@ index f498d40e34c..16cd13abf8e 100644
  #    ifndef __VXWORKS__
  #      define HAVE_EXECV      1
  #      define HAVE_FORK       1
-@@ -340,6 +341,7 @@ corresponding Unix manual entries for more information on calls.");
+@@ -340,6 +341,26 @@ corresponding Unix manual entries for more information on calls.");
  #    define HAVE_SYSTEM     1
  #    define HAVE_WAIT       1
  #    define HAVE_TTYNAME    1
++#    else
++#    ifdef HAVE_GETGROUPS
++#      undef HAVE_GETGROUPS
++#    endif
++#    ifdef HAVE_SETGROUPS
++#      undef HAVE_SETGROUPS
++#    endif
++#    ifdef HAVE_SYMLINK
++#      undef HAVE_SYMLINK
++#    endif
++#    ifdef HAVE_CHROOT
++#      undef HAVE_CHROOT
++#    endif
++#    ifdef HAVE_FDATASYNC
++#      undef HAVE_FDATASYNC
++#    endif
++#    ifdef HAVE_FCHDIR
++#      undef HAVE_FCHDIR
++#    endif
 +#    endif  /* ! __SWITCH__ */
  #  endif  /* _MSC_VER */
  #endif  /* ! __WATCOMC__ || __QNX__ */
  
-@@ -4878,6 +4880,7 @@ os_system_impl(PyObject *module, PyObject *command)
+@@ -4878,6 +4899,7 @@ os_system_impl(PyObject *module, PyObject *command)
  #endif /* HAVE_SYSTEM */
  
  
@@ -140,7 +159,7 @@ index f498d40e34c..16cd13abf8e 100644
  /*[clinic input]
  os.umask
  
-@@ -4896,6 +4899,7 @@ os_umask_impl(PyObject *module, int mask)
+@@ -4896,6 +4918,7 @@ os_umask_impl(PyObject *module, int mask)
          return posix_error();
      return PyLong_FromLong((long)i);
  }

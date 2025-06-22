@@ -12,19 +12,19 @@ index 4bd4eb4751b..668a58223ab 100644
  #  define _Py_FORCE_UTF8_LOCALE
  #endif
 diff --git a/Lib/posixpath.py b/Lib/posixpath.py
-index af2814bdb05..1119d8010f5 100644
+index af2814bdb05..857100ce785 100644
 --- a/Lib/posixpath.py
 +++ b/Lib/posixpath.py
-@@ -59,6 +59,9 @@ def normcase(s):
- 
+@@ -60,6 +60,9 @@ def normcase(s):
  def isabs(s):
      """Test whether a path is absolute"""
+     s = os.fspath(s)
 +    if sys.platform == 'horizon':
 +        i = s.find('/', 0)
 +        return (i != -1 and i != 0) and s[i - 1] == ':'
-     s = os.fspath(s)
      sep = _get_sep(s)
      return s.startswith(sep)
+ 
 @@ -86,6 +89,10 @@ def join(a, *p):
                  path += b
              else:
@@ -32,7 +32,7 @@ index af2814bdb05..1119d8010f5 100644
 +        if sys.platform == 'horizon':
 +            i = b.find('/', 0)
 +            if (i != -1 and i != 0) and b[i - 1] == ':':
-+                path = b            
++                path = b
      except (TypeError, AttributeError, BytesWarning):
          genericpath._check_arg_types('join', a, *p)
          raise
@@ -65,7 +65,7 @@ index af2814bdb05..1119d8010f5 100644
      while rest:
          name, _, rest = rest.partition(sep)
 diff --git a/Modules/Setup b/Modules/Setup
-index 02cfb67518d..980c738048d 100644
+index 02cfb67518d..eb445f6a9ed 100644
 --- a/Modules/Setup
 +++ b/Modules/Setup
 @@ -103,8 +103,8 @@ PYTHONPATH=$(COREPYTHONPATH)
@@ -79,6 +79,83 @@ index 02cfb67518d..980c738048d 100644
  _sre _sre.c				# Fredrik Lundh's new regular expressions
  _codecs _codecsmodule.c			# access to the builtin codecs and codec registry
  _weakref _weakref.c			# weak references
+@@ -169,26 +169,26 @@ _symtable symtablemodule.c
+ 
+ # Modules that should always be present (non UNIX dependent):
+ 
+-#array arraymodule.c	# array objects
+-#cmath cmathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
+-#math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
+-#_contextvars _contextvarsmodule.c  # Context Variables
+-#_struct _struct.c	# binary structure packing/unpacking
++array arraymodule.c	# array objects
++cmath cmathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
++math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
++_contextvars _contextvarsmodule.c  # Context Variables
++_struct _struct.c	# binary structure packing/unpacking
+ #_weakref _weakref.c	# basic weak reference support
+ #_testcapi _testcapimodule.c    # Python C API test module
+ #_testinternalcapi _testinternalcapi.c -I$(srcdir)/Include/internal -DPy_BUILD_CORE_MODULE  # Python internal C API test module
+-#_random _randommodule.c -DPy_BUILD_CORE_MODULE	# Random number generator
+-#_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
+-#_pickle _pickle.c	# pickle accelerator
+-#_datetime _datetimemodule.c	# datetime accelerator
+-#_zoneinfo _zoneinfo.c	# zoneinfo accelerator
+-#_bisect _bisectmodule.c	# Bisection algorithms
+-#_heapq _heapqmodule.c	# Heap queue algorithm
+-#_asyncio _asynciomodule.c  # Fast asyncio Future
+-#_json -I$(srcdir)/Include/internal -DPy_BUILD_CORE_BUILTIN _json.c	# _json speedups
+-#_statistics _statisticsmodule.c # statistics accelerator
++_random _randommodule.c -DPy_BUILD_CORE_MODULE	# Random number generator
++_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
++_pickle _pickle.c	# pickle accelerator
++_datetime _datetimemodule.c	# datetime accelerator
++_zoneinfo _zoneinfo.c	# zoneinfo accelerator
++_bisect _bisectmodule.c	# Bisection algorithms
++_heapq _heapqmodule.c	# Heap queue algorithm
++_asyncio _asynciomodule.c  # Fast asyncio Future
++_json -I$(srcdir)/Include/internal -DPy_BUILD_CORE_BUILTIN _json.c	# _json speedups
++_statistics _statisticsmodule.c # statistics accelerator
+ 
+-#unicodedata unicodedata.c    # static Unicode character database
++unicodedata unicodedata.c    # static Unicode character database
+ 
+ 
+ # Modules with some UNIX dependencies -- on by default:
+@@ -204,10 +204,10 @@ _symtable symtablemodule.c
+ #mmap mmapmodule.c
+ 
+ # CSV file helper
+-#_csv _csv.c
++_csv _csv.c
+ 
+ # Socket module helper for socket(2)
+-#_socket socketmodule.c
++_socket socketmodule.c
+ 
+ # Socket module helper for SSL support; you must comment out the other
+ # socket line above, and possibly edit the SSL variable:
+@@ -245,15 +245,15 @@ _symtable symtablemodule.c
+ # The _md5 module implements the RSA Data Security, Inc. MD5
+ # Message-Digest Algorithm, described in RFC 1321.
+ 
+-#_md5 md5module.c
++_md5 md5module.c
+ 
+ 
+ # The _sha module implements the SHA checksum algorithms.
+ # (NIST's Secure Hash Algorithms.)
+-#_sha1 sha1module.c
+-#_sha256 sha256module.c -DPy_BUILD_CORE_BUILTIN
+-#_sha512 sha512module.c -DPy_BUILD_CORE_BUILTIN
+-#_sha3 _sha3/sha3module.c
++_sha1 sha1module.c
++_sha256 sha256module.c -DPy_BUILD_CORE_BUILTIN
++_sha512 sha512module.c -DPy_BUILD_CORE_BUILTIN
++_sha3 _sha3/sha3module.c
+ 
+ # _blake module
+ #_blake2 _blake2/blake2module.c _blake2/blake2b_impl.c _blake2/blake2s_impl.c
 diff --git a/Modules/clinic/posixmodule.c.h b/Modules/clinic/posixmodule.c.h
 index f5df5c3b907..9dadfd607cf 100644
 --- a/Modules/clinic/posixmodule.c.h

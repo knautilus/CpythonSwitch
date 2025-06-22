@@ -190,7 +190,7 @@ index f5df5c3b907..9dadfd607cf 100644
      #define OS_UNAME_METHODDEF
  #endif /* !defined(OS_UNAME_METHODDEF) */
 diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
-index f498d40e34c..36ec7f6ce6e 100644
+index f498d40e34c..77198a12c07 100644
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
 @@ -322,6 +322,7 @@ corresponding Unix manual entries for more information on calls.");
@@ -232,7 +232,7 @@ index f498d40e34c..36ec7f6ce6e 100644
  #endif /* HAVE_SYSTEM */
  
  
-+#ifdef HAVE_UMASK
++#if defined(HAVE_UMASK)
  /*[clinic input]
  os.umask
  
@@ -240,10 +240,20 @@ index f498d40e34c..36ec7f6ce6e 100644
          return posix_error();
      return PyLong_FromLong((long)i);
  }
-+#endif /* HAVE_UMASK */
++#endif /* defined(HAVE_UMASK) */
  
  #ifdef MS_WINDOWS
  
+@@ -14634,7 +14657,9 @@ static PyMethodDef posix_methods[] = {
+     OS_RMDIR_METHODDEF
+     OS_SYMLINK_METHODDEF
+     OS_SYSTEM_METHODDEF
++#ifdef HAVE_UMASK
+     OS_UMASK_METHODDEF
++#endif
+     OS_UNAME_METHODDEF
+     OS_UNLINK_METHODDEF
+     OS_REMOVE_METHODDEF
 diff --git a/Modules/timemodule.c b/Modules/timemodule.c
 index df59f2aac5a..c7c88f6feb6 100644
 --- a/Modules/timemodule.c

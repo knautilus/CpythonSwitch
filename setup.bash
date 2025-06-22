@@ -20,6 +20,10 @@ python3 --version
 
 apt -y install build-essential checkinstall
 
+curl -LOC - https://github.com/knautilus/Utils/releases/download/v1.0/devkitpro-pkgbuild-helpers-2.2.4-2-any.pkg.tar.xz
+dkp-pacman -U --noconfirm devkitpro-pkgbuild-helpers-2.2.4-2-any.pkg.tar.xz
+rm devkitpro-pkgbuild-helpers-2.2.4-2-any.pkg.tar.xz
+
 git clone --branch v3.9.22 --single-branch https://github.com/python/cpython.git
 
 pushd cpython
